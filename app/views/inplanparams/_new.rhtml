@@ -1,0 +1,13 @@
+
+<br />
+<!--   To add onsubmit option to form_remote_tag use :loading => 'inplanparamDataCheck();',// -->
+
+<%= form_tag :action => 'create' %>
+
+<%= render :partial => 'form' %>
+<br />
+<span class="cancel"><%= link_to_function('Cancel', 'cancel_newParam();' ) %></span>
+
+<%= submit_tag "Create" %>
+
+<% end_form_tag %>

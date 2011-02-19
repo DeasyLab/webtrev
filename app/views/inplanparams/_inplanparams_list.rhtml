@@ -1,0 +1,91 @@
+<% if @total == 0 %>
+    <p>
+    	No Plan Parameters found for<%= @session['processplan_name'] %>...
+	</p>
+<% else %>
+    <p>
+    	Number of Parameters found for <%= @session['processplan_name'] %>: <b><%= @total %></b>
+    </p>
+	
+    <p>
+        <% if @inplanparam_pages.page_count > 1 %>
+            Page&nbsp;:
+            <%= pagination_links_remote @inplanparam_pages %>
+        <% end %>
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <td align='center' <%= sort_td_class_helper "Structure" %>><%= sort_link_helper "Structure", "Structure" %></td>
+                <td align='center' <%= sort_td_class_helper "Metric" %>><%= sort_link_helper "Metric", "Metric" %></td>
+                <td align='center'>Goals</td>
+                <td align='center' <%= sort_td_class_helper "Category" %>><%= sort_link_helper "Category", "Category" %></td>                
+            </tr>
+        </thead>
+
+        <tbody>
+            <% Inplanparam.has_many(:allstruct) %>
+
+            <% @inplanparams.each do |k| %>
+                                
+                 <%case k.metric
+                    when "Dx"           
+                        then 
+                    
+                            @dx = Dxmetric.find(:first, :conditions => "inplanparam_id = #{k.id}")
+                            
+                            goal = [ @dx.percentage.to_s + ' ' + '% Struct Vol  gets <= ' + @dx.passvalue.to_s + ' +/- ' + @dx.margin.to_s  + ' Gy'] 
+                            
+                            metric = 'Dx'
+                    
+                    when "Vx"           
+                        then 
+                            
+                            @vx = Vxmetric.find(:first, :conditions => "inplanparam_id = #{k.id}")
+                            
+                            goal = [ @vx.passvalue.to_s + ' +/- ' + @vx.margin.to_s + ' % Struct Vol  gets >= ' + @vx.doseCutoff.to_s +  ' Gy Cutoff']
+                            
+                            metric = 'Vx'
+                            
+                    when "minDose"      
+                        then 
+                                                            
+                            @minDose = Mindosemetric.find(:first, :conditions => "inplanparam_id = #{k.id}")
+                            
+                            goal = [ @minDose.passvalue.to_s + ' ' + ' +/-  ' + @minDose.margin.to_s  + ' Gy' ]
+                                    
+                            metric = 'Min Dose'
+                            
+                    when "maxDose"      
+                        then 
+                                
+                            @maxDose = Maxdosemetric.find(:first, :conditions => "inplanparam_id = #{k.id}")
+                            
+                            goal = [ 'Max Dose >= ' + @maxDose.passvalue.to_s + ' ' + ' +/-  ' + @maxDose.margin.to_s + ' Gy' ]
+                            
+                            metric = 'Max Dose'
+                            
+                    when "meanDose"     
+                        then 
+                                                        
+                            @meanDose = Meandosemetric.find(:first, :conditions => "inplanparam_id = #{k.id}")
+                            
+                            goal = ['Mean Dose >= ' + @meanDose.passvalue.to_s + ' ' + ' +/-  ' + @meanDose.margin.to_s + ' Gy' ]
+                            
+                            metric = 'Mean Dose'
+                  end %>
+                    
+                <tr class="<%= cycle("even","odd") %>">
+                    <td width="100"     align='center'> <%= k.structure %>  </td>
+                    <td width="70"      align='center'> <%= metric%>        </td>                    
+                    <td width="250"     align='center'> <strong><%= goal%></strong></td>
+                    <td width="150"     align='center'> <%= k.category %>   </td>                    
+                    <td width="25"      align='left'><%= link_to 'Edit', :action => 'edit', :id => k %>
+                        <br /><%= link_to 'Delete', { :action => 'destroy', :id => k}, :confirm => 'Are you sure?', :method => :post %>
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>    
+<% end %>

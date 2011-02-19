@@ -1,0 +1,9 @@
+<h1>Editing inplanparam</h1>
+
+<% form_tag :action => 'update', :id => @inplanparam do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+<% end %>
+
+<%= link_to 'Show', :action => 'show', :id => @inplanparam %> |
+<%= link_to 'Back', :action => 'list' %>

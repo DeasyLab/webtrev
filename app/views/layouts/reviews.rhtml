@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+        <title>Reviews:<%= controller.action_name %></title>
+        <%= stylesheet_link_tag 'scaffold' %>
+        <%= javascript_include_tag :defaults %>
+        <%= javascript_include_tag "sorttable", "bubble","styley_source", "cookies" %>
+    </head>
+    <body>
+        <div id="banner">
+            <span class="leftimg"><img src= "/images/washU.PNG"/></span><span class="rightimg"><img src= "/images/radOnc.png"/></span>Web Based
+            <br/>
+            Treatment Plan Review 
+        </div>
+        <% user = @session['user']
+        if !user.nil? %>
+        <div class="userName">
+            Hello, <%= user.firstname %>
+        </div>
+        <%end %>
+        <div class="planSetting">
+            <span onmouseover="showToolTip(event,'Edit/Change user settings');return false" onmouseout="hideToolTip()"><%= link_to("Setting", :controller =>"settings", :action=>"list") %>
+            </span>
+            &#47;<span onmouseover="showToolTip(event,'Log out your session');return false" onmouseout="hideToolTip()"><%= link_to("Log Out", :controller =>"account", :action=>"logout") %>
+            </span>
+        </div>
+        <div id="bubble_tooltip">
+            <div class="bubble_top">
+                <span></span>
+            </div>
+            <div class="bubble_middle">
+                <span id="bubble_tooltip_content"></span>
+            </div>
+            <div class="bubble_bottom">
+            </div>
+        </div>
+        <% @plan = session['plan'] %>
+        <p class="curView">
+            <%= @plan.first_name + ' ' + @plan.last_name %>
+            <br/>
+            <a href="#" onclick="runApp('R:/CERR3/test');"><%= @plan.tx_plan_id.slice(0..9) %></a>
+            <br/>
+            Dose: <%= @plan.fractionID.slice(0..9) %>
+            <br/>
+            Rx: <%=@plan.Rx %>&nbsp; <%=@plan.doseUnit %>
+        </p>
+        <div id="side">
+            <%=link_to "&nbsp;&nbsp; Approved List", 	{:controller=>"plans"   ,:action=>"approved" }, {:class=>"leftNavLocal"} %>
+            <br/>
+            <%=link_to "&nbsp;&nbsp; Unapproved List", 	{:controller=>"plans", :action => "unapproved" }, {:class=>"leftNavLocal"} %>
+            <br/>
+            <%if isMD %>
+            <%=link_to "&nbsp;&nbsp; Assigned List", 		{:controller =>"plans"  ,:action=>"assigned"}, {:class=>"leftNavLocal"} %>
+            <br/>
+            <%end %>
+            <%=link_to "&nbsp;&nbsp; List All", 		{:controller =>"plans"  ,:action=>"all"}, {:class=>"leftNavLocal"} %>
+            <br/>
+            <%if !isMD %>
+            <%=link_to "&nbsp;&nbsp; Process Plans", 	{:controller=>"processplans", :action => "list"}, {:class=>"leftNavLocal"} %>
+            <br/>
+            <%end %>
+            <%=link_to "&nbsp;&nbsp; Contact", 		{:controller =>""  ,:action=>""  , :id=>""  }, {:class=>"leftNavLocal"} %>
+            <br/>
+        </div>
+        <div id="structLegend">
+        </div>
+        <div id="DVH_Stat1">
+        </div>
+        <div id="DVH_Stat2">
+        </div>
+        <div id="DVH_Stat3">
+        </div>
+        <div id="DVH_Stat4">
+        </div>
+        <ul id="nav">
+            <li<%if @session['view'].eql?('tra') %>
+ class="tab-selected"<%else %>
+                class="tab-unselected"<%end %>
+                ><strong><%= link_to "Transverse", {:controller =>"reviews"  ,:action=>"transverse"} %></strong>
+            </li>
+            <li<%if @session['view'].eql?('sag') %>
+ class="tab-selected"<%else %>
+                class="tab-unselected"<%end %>
+                ><strong><%= link_to "Sagittal", {:controller =>"reviews"  ,:action=>"sagittal"} %></strong>
+            </li>
+            <li<%if @session['view'].eql?('cor') %>
+ class="tab-selected"<%else %>
+                class="tab-unselected"<%end %>
+                ><strong><%= link_to "Coronal", {:controller =>"reviews"  ,:action=>"coronal"} %></strong>
+            </li>
+            <li<%if @session['view'].eql?('dvh') %>
+ class="tab-selected"<%else %>
+                class="tab-unselected"<%end %>
+                ><strong><%= link_to "DVH", {:controller =>"reviews"  ,:action=>"dvh"} %></strong>
+            </li>
+            <li<%if @session['view'].eql?('target') %>
+ class="tab-selected"<%else %>
+                class="tab-unselected"<%end %>
+                ><strong><%= link_to "Target", {:controller =>"reviews"  ,:action=>"target"} %></strong>
+            </li>
+            <li class="tab-unselected" id="planparam_tab">
+                <strong><%= link_to_remote "Planning Params",
+                    :update     => 'review_remote_update',
+                    :url        => {:controller =>"inplanparams"  ,:action=>"report"},
+                    :success    => "$('show_DVH_Partial').hide()",
+                    :complete   => "tabselect($('planparam_tab'));" %>
+                </strong>
+            </li>
+            <li<%if @session['view'].eql?('comments') %>
+ class="tab-selected"<%else %>
+                class="tab-unselected"<%end %>
+                ><strong><%= link_to "Comments", {:controller =>"reviews"  ,:action=>"allcomments"} %></strong>
+            </li>
+        </ul>
+        <%if @session['view'].eql?('dvh') %>
+        <div id="dvh_review">
+            <%= @content_for_layout %>
+        </div>
+        <%else %>
+        <div id="review">
+            <br/>
+            <span id="review_remote_update"><%= @content_for_layout %></span>
+            <%= render :partial => "reviews/show" %>
+        </div>
+        <%end %>
+        <%if @session['view'].eql?('dvh') %>
+        <div id="dvh_comment_container">
+            <span id="new_link"></span>
+            <br/>
+			<%#debugger if ENV['RAILS_ENV'] == 'development'%>
+            <span id="dvh_add_comment"></span>
+            <br/>
+            <span id="dvh_comment_list1"></span>
+            <br/>
+            <span id="dvh_comment_list2"></span>
+            <br/>
+            <span id="dvh_comment_list3"></span>
+            <br/>
+            <span id="dvh_comment_list4"></span>
+        </div>
+        <%else %>
+        <div id="comment_container">
+            <span id="new_link"><%= link_to_remote "New Comment",
+                :update     => 'add_comment',
+                :url        => {:controller => 'comments', :action => 'form'},
+                :failure    => "alert('There was an error')",
+                :success    => "setStyleById('add_comment','display', 'block');",
+                :complete   => "$('new_link').hide()" %>
+            </span>
+            <br/>
+            <span id="add_comment"></span>
+            <br/>
+            <span id="comment_list"></span>
+        </div>
+        <%end %>
+    </body>
+</html>

@@ -1,0 +1,53 @@
+
+<% if @total == 0 %>
+    <p>No Plans found...</p>
+<% else %>
+    <%
+        Processplan.belongs_to(:user)
+
+        # debugger if ENV['RAILS_ENV'] == 'development'
+%>
+    <p>Number of Plans found :
+        <b><%= @total %></b>
+    </p>
+
+    <p>
+        <% if @processplan_pages.page_count > 1 %>
+            Page&nbsp;:
+            <%= pagination_links_remote @processplan_pages %>
+        <% end %>
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <td <%= sort_td_class_helper "Plan" %>><%= sort_link_helper "Plan", "Plan" %></td>
+                <td <%= sort_td_class_helper "Lastname" %>><%= sort_link_helper "Last Name", "Lastname" %></td>
+                <td <%= sort_td_class_helper "Firstname" %>><%= sort_link_helper "First Name", "Firstname" %></td>
+                <td <%= sort_td_class_helper "datecreated" %>><%= sort_link_helper "Created At", "datecreated" %></td>
+            </tr>
+        </thead>
+        <tbody>
+            <% @processplans.each do |k| %>
+                <tr class="<%= cycle("even","odd") %>">
+                    <td width="90" align='center'><%= k.archive %></td>
+                    <td width="90" align='center'><%= k.patientname_last %></td>
+                    <td width="90" align='center'><%= k.patientname_first %></td>
+                    <td width="110" align='center'><%= k.datecreated.ctime %></td><!-- Button to add Planning parameters-->
+                    <td width="70" align='center'></td>
+                    <td width="70" align='center'>
+                        <%md = User.getMD(k.ref_phy_id)
+                          md = md[0]
+                        %>
+
+                        <%debugger if ENV['RAILS_ENV'] == 'development'%>                        
+                        
+                        Dr. <%=md.lastname %>   <br />                     
+                        
+                        <%= button_to "Re-Process",{:action=>"re_send_process",:id=>k}%>
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+<% end %>

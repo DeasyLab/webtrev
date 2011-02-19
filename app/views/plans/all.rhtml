@@ -1,0 +1,25 @@
+<h3> All Plans</h3>
+<p>
+<strong>Filter on Last Name: </strong>
+<form name="pform" action="" style="display:inline;">
+    <%= text_field_tag("queryLM", @params['queryLM'], :size => 10 ) %>
+</form>            
+&nbsp;&nbsp;
+&nbsp;&nbsp;
+<%= image_tag("load_spinner.gif",
+              :align => 'absmiddle',
+              :border=> 0,
+              :id => "spinnerLM",
+              :style=>"display: none;")
+%>
+</p>            
+<%= observe_field 'queryLM',  :frequency => 2,
+         :update => 'planList',
+         :before => "Element.show('spinnerLM')",
+         :success => "Element.hide('spinnerLM')",
+         :url => {:action => 'all'},
+         :with => 'queryLM' 
+%>                           
+<div id="planList">
+    <%= render :partial => "plan_list", :layout => false %>
+</div>

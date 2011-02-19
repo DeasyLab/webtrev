@@ -1,0 +1,57 @@
+<%
+Inplanparam.has_many(:allstruct)
+
+@allstruct = Allstruct.allstructName(@session['processplan_id'])
+
+structName = Array.new
+@allstruct.each do |allstruct|
+    structName << allstruct.structurename
+end
+
+metrics = Array.new;
+metrics << 'Select Metric'
+metrics << 'Dx'
+metrics << 'Vx'
+metrics << 'maxDose'
+metrics << 'meanDose'
+metrics << 'minDose'
+
+category = Array.new
+category << 'PTV Coverage Goals'
+category << 'Critical Structure Constraints'
+category << 'Normal Tissue Constraints'
+%>
+
+<h3>New planparameters</h3>
+
+<table>
+    <tbody>
+        <tr>
+            <td align='center'><strong>Structure</strong></td>
+            <td align='center'><strong>Category</strong></td>
+            <td align='center'><strong>Metric</strong></td> 
+        </tr>
+        
+        <tr>
+            <td width="110" align='center'><%=select(:inplanparam,:structure, structName) %></td>            
+  
+            <td width="120" align='center'><%= select(:inplanparam,:category, category)%></td>            
+            
+            <td width="130" align='center'><%= select(:inplanparam,:metric, metrics)%></td>            
+        </tr>
+    </tbody>
+</table>
+
+<br />
+<div id='disp_metric_selected'></div>
+
+
+<br />
+
+<%= observe_field 'inplanparam_metric',  :frequency => 2,
+:update    => 'disp_metric_selected',
+:before    => "Element.show('spinnerSTR')",
+:success   => "Element.hide('spinnerSTR')",
+:url       => {:controller =>"inplanparams", :action => 'dispmetric'},
+:with      => 'inplanparam' %>
+</br>

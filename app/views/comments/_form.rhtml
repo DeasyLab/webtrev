@@ -1,0 +1,17 @@
+<%=
+    form_remote_tag(:update => "comment_list",
+    :url => { :controller=> "comments", :action => 'create' },
+    :complete   => "cancel_comment()")
+%>
+
+<label for="comment_body">Message body
+    <span class="cancel"><%= link_to_function('Cancel', 'cancel_comment();' ) %></span>
+</label>
+<br/>
+<%= text_area 'comment', 'body' %>
+
+<%= submit_tag "Create" %>
+
+<% end_form_tag %>
+
+<%#debugger if ENV['RAILS_ENV'] == 'development'%>

@@ -1,0 +1,40 @@
+<%@dvh = Dvhstat.allstructbyplan(@plan.id)
+structName = Array.new
+struct = Array.new
+structName << ['Show All', 0]
+@dvh.each do |dvh|
+structName << [dvh.structName, dvh.structNum]
+end
+if !@session['sag_structOnSlc'].nil?
+selected = @session['sag_structOnSlc'];
+else
+selected = 0;
+end %>
+<div id="structOnSlc_form">
+    <% form_tag :action => 'sagittal', :id => @sagittal do %>
+    <strong>Show Slices with Structure:</strong>
+    <br/>
+    <%=select(:sagittal,:struct, structName,{:selected => selected}) %>&nbsp;&nbsp;&nbsp;&nbsp;<%= submit_tag 'show' %>
+    <% end %>
+    <%@session['sag_structOnSlc'] = 0 %>
+</div>
+<p>
+</p>
+<p>
+</p>
+<% if !@allSagittalURL.empty? %>
+<ul>
+    <% Review.has_many(:comment) %>
+    <% @allSagittalURL.each do |photo| %>
+    <li id="thumb_li">
+        <%= thumb_for photo %>
+        <br/>
+        <%hasComm = Comment.findByReviewID(photo.id) %>
+        <%if !hasComm.empty? %>
+        <img alt="Comments present" src="../images/icon_comment.png" />
+        <%end %>
+        <span class="photoCaption"><%= photo.coord %>cm</span>
+    </li>
+    <% end %>
+</ul>
+<% end %>

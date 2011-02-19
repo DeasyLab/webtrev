@@ -1,0 +1,104 @@
+<h3>Listing Structure Dictionary</h3>
+
+<br />
+
+<p>
+<%=
+    form_remote_tag(
+    :update     => 'settingDisp',
+    :before     => "Element.show('spinnerLM')",
+    :success    => "Element.hide('spinnerLM')",
+    :url        => {:controller => 'userstructdicts', :action => 'create'})
+%>
+    <!--[form:userstructdict]-->
+    <Strong>Add Structure Name : </Strong> <%= text_field 'userstructdict', 'structurename'%>
+    <%= hidden_field_tag("userstructdict[user_id]", value = "#{@session['user']['id']}") %>
+    <!--[eoform:userstructdict]-->
+    &nbsp;&nbsp; <%= submit_tag "Add" %>
+
+<% end_form_tag %>
+    &nbsp;&nbsp;
+    &nbsp;&nbsp;
+    <%= image_tag("load_spinner.gif",
+                  :align => 'absmiddle',
+                  :border=> 0,
+                  :id => "spinnerLM",
+                  :style=>"display: none;")
+    %>
+</p>
+
+<br />
+<br />
+
+<h3>Structure List</h3>
+    <% if @total == 0 %>
+        <p>No Structure found ... </p>
+    <% else %>
+    
+    <p>    
+    <form name="pform" action="" style="display:inline;">
+        <strong>Filter on Structure Name: </strong><%= text_field_tag("structquerySTR", @params['structquerySTR'], :size => 10 ) %>
+    </form>            
+    </p>            
+    
+    <%= observe_field 'structquerySTR',  :frequency => 2,
+             :update => 'settingDisp',
+             :before => "Element.show('spinnerLM')",
+             :success => "Element.hide('spinnerLM')",
+             :url => {:controller => 'userstructdicts', :action => 'list'},
+             :with => 'structquerySTR' 
+    %>                 
+
+    <br />
+    <br />
+    
+    <table>
+        <thead class="thead">
+            <tr>
+                <td align='center' <%= sort_td_class_helper "Structure" %>><%= sort_link_helper "Structure", "Structure", "list" %></td>
+            </tr>
+        </thead>
+        
+         <tbody>
+        <% i=0
+          for userstructdict in @userstructdicts %>
+          
+          <% 
+          i = i+1
+          id = i.to_s + '_struct'
+          %>
+            <tr class="<%= cycle("even","odd") %>">                
+            
+                <% for column in Userstructdict.content_columns %>                
+                <td id="<%=id%>" width="200"><%=h userstructdict.send(column.name) %></td>
+                <% end %>
+                        
+                <td>
+                <%= link_to_remote 'Edit',
+                :update     => id,
+                :before     => "Element.show('spinnerLM')",
+                :success    => "Element.hide('spinnerLM')",
+                :url        => {:action => 'edit', :id => userstructdict}
+                %>
+                 
+                <br />
+                <%= link_to_remote 'Destroy',
+                :update     => 'settingDisp',
+                :before     => "Element.show('spinnerLM')",
+                :success    => "Element.hide('spinnerLM')",
+                :url        => { :action => 'destroy', :id => userstructdict }, 
+                :confirm    => 'Are you sure?', 
+                :method     => :post %>
+                </td>
+            </tr>
+        <% end %>
+        </tbody>
+        
+    </table>
+    
+    <%= link_to 'Previous page', { :page => @userstructdict_pages.current.previous } if @userstructdict_pages.current.previous %>
+    <%= link_to 'Next page', { :page => @userstructdict_pages.current.next } if @userstructdict_pages.current.next %> 
+
+<%end%>
+
+

@@ -1,0 +1,19 @@
+<hr />
+<p> Total Reports found: <%=@total%></p>
+
+<% if !@total.eql?(0)%>
+<strong>Select Report:</strong>
+<%= collection_select(:reportName, :id, @standardreporttypes, :id, :reportName, options ={:prompt => "-Select a Report"}, :class =>" ") %>
+
+<%=
+    observe_field 'reportName_id',  :frequency => 4,
+    :update    => 'show_selected_report',
+    :before    => "Element.show('spinnerReport')",
+    :success   => "Element.hide('spinnerReport')",
+    :url       => {:controller => 'standardreports', :action => 'list'},
+    :with      => 'reportName'
+%>
+
+<%else%>
+<p>There are no reports for this MD</p>
+<%end%>

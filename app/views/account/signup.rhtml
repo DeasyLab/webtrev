@@ -1,0 +1,31 @@
+<%= start_form_tag :action=> "signup" %>
+
+<div title="Account signup" id="signupform" class="form">
+  <h3>New Account SignUp</h3>
+  <%= error_messages_for 'user' %><br/>
+  
+  <label for="user_login">First Name:</label><br/>
+  <%= text_field "user", "firstname", :size => 30 %><br/><br/>
+
+  <label for="user_login">Last Name:</label><br/>
+  <%= text_field "user", "lastname", :size => 30 %><br/><br/>
+  
+  <label for="user_login">Date of Birth:<br />MM-DD-YYYY</label><br/>
+  <%= text_field "user", "dob", :size => 30 %><br/><br/>
+  
+    <label for="user_login">Category: <br />(MD/DO/PHY)</label><br/>
+  <%= text_field "user", "category", :size => 30 %><br/><br/>
+    
+  <label for="user_login">Desired login:<br /> Please Use you E-mail Address</label><br/>
+  <%= text_field "user", "login", :size => 30 %><br/><br/>
+  
+  <label for="user_password">Choose password:</label><br/>
+  <%= password_field "user", "password", :size => 30 %><br/><br/>
+  
+  <label for="user_password_confirmation">Confirm password:</label><br/>
+  <%= password_field "user", "password_confirmation", :size => 30 %><br/><br/>
+      
+<input type="submit" value="Signup &#187;" class="primary" />
+
+<%= end_form_tag %>
+

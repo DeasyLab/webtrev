@@ -1,0 +1,26 @@
+<h3>Listing Plans in Queue</h3>
+
+<p>
+<form name="sform" action="" style="display:inline;">
+<label for="item_name">Filter on <strong>Last Name:</strong> </label>
+<%= text_field_tag("queryPP", @params['queryPP'], :size => 10 ) %>
+</form>
+&nbsp;&nbsp;
+&nbsp;&nbsp;
+<%= image_tag("load_spinner.gif",
+              :align    => 'absmiddle',
+              :border   => 0,
+              :id       => "spinnerPP",
+              :style    =>"display: none;" ) %>
+</p>
+
+<%= observe_field 'queryPP',  :frequency => 2,
+         :update    => 'processplans_list_table',
+         :before    => "Element.show('spinnerPP')",
+         :success   => "Element.hide('spinnerPP')",
+         :url       => {:action => 'inqueue_list'},
+         :with      => 'queryPP' %>
+
+<div id="processplans_list_table">
+    <%= render :partial => "inqueueplans_list" %>
+</div>

@@ -1,0 +1,15 @@
+<div id="mask" style="display: none"></div>
+
+<div id="generalEdit" style="display: none;">
+
+    <img id="closeImg" onclick="Photo.hide();" src=""></img>
+    
+    <h3>Editing <%@standardreports.structure%></h3>
+    
+    <span class="cancel"><%= link_to_function('Cancel', 'cancel_report_type();' ) %></span>
+    
+    <% form_tag :action => 'update', :id => @standardreports do %>
+      <%= render :partial => 'form' %>
+      <%= submit_tag 'Edit' %>
+    <% end %>
+</div>

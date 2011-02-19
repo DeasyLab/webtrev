@@ -1,0 +1,41 @@
+<%@dvh = Dvhstat.allstructbyplan(@plan.id)
+structName = Array.new
+struct = Array.new
+structName << ['Show All', 0]
+@dvh.each do |dvh|
+structName << [dvh.structName, dvh.structNum]
+end
+if !@session['tra_structOnSlc'].nil?
+selected = @session['tra_structOnSlc'];
+else
+selected = 0;
+end %>
+<div id="structOnSlc_form">
+    <% form_tag :action => 'transverse', :id => @transverse do %>
+    <strong>Show Slices with Structure:</strong>
+    <br/>
+    <%=select(:transverse,:struct, structName,{:selected => selected}) %>&nbsp;&nbsp;&nbsp;&nbsp;<%= submit_tag 'show' %>
+    <% end %>
+    <%@session['tra_structOnSlc'] = 0 %>
+</div>
+<p>
+</p>
+<p>
+</p>
+<% if !@allTransURL.empty? %>
+<% Review.has_many(:comment) %>
+<%#debugger if ENV['RAILS_ENV'] == 'development' %>
+<ul>
+    <% @allTransURL.each do |photo| %>
+    <li id="thumb_li">
+        <%= thumb_for photo %>
+        <br/>
+        <%hasComm = Comment.findByReviewID(photo.id) %>
+        <%if !hasComm.empty? %>
+        <img alt="Comments present" src="../images/icon_comment.png" />
+        <%end %>
+        <span class="photoCaption"><%= photo.coord %> cm</span>
+    </li>
+    <% end %>
+</ul>
+<% end %>

@@ -1,0 +1,105 @@
+<% if !@allDVHURL.empty? %>
+
+<%
+dvh_list = Array.new
+
+dvh_list << ['Select   DVH', 0]
+ i = 0;
+@allDVHURL.each do |photo|
+	i = i + 1;
+	dvhstat = Dvhstat.structName_by_review_id(photo.id)
+    dvh_list << [dvhstat[0].structName, photo.id]
+end
+
+selected=0;
+%>
+
+<% #debugger if ENV['RAILS_ENV'] == 'development'%>
+
+<div id="dvh_select_form" style="float: left;">
+<%=select(:dvh,:dropdown1, dvh_list,{:selected => selected}) %>
+&nbsp;&nbsp;
+&nbsp;&nbsp;
+<%= image_tag("load_spinner.gif",
+              :align => 'absmiddle',
+              :border=> 0,
+              :id => "DVH_spinnerLM1",
+              :style=>"display: none;")
+%>
+<br />
+<span id="show_DVH_Partial1"></span>
+</div>
+<%= observe_field 'dvh_dropdown1',  
+		 :frequency => 3,
+         :update 	=> 'show_DVH_Partial1',
+         :before 	=> "Element.show('DVH_spinnerLM1')",
+         :success 	=> "Element.hide('DVH_spinnerLM1')",		 
+         :url 		=> {:action => 'showDVH1'},
+		 :with 		=> 'dvh'
+%>
+ 
+<div id="dvh_select_form" style="float: right;">
+<%=select(:dvh,:dropdown2, dvh_list,{:selected => selected}) %>
+&nbsp;&nbsp;
+&nbsp;&nbsp;
+<%= image_tag("load_spinner.gif",
+              :align => 'absmiddle',
+              :border=> 0,
+              :id => "DVH_spinnerLM2",
+              :style=>"display: none;")
+%>
+<br />
+<span id="show_DVH_Partial2"></span>
+</div>
+<%= observe_field 'dvh_dropdown2',  
+		 :frequency => 3,
+         :update 	=> 'show_DVH_Partial2',
+         :before 	=> "Element.show('DVH_spinnerLM2')",
+         :success 	=> "Element.hide('DVH_spinnerLM2')",		 
+         :url 		=> {:action => 'showDVH2'},
+         :with 		=> 'dvh' 
+%> 
+
+<div id="dvh_select_form" style="float: left;">
+<%=select(:dvh,:dropdown3, dvh_list,{:selected => selected}) %>
+&nbsp;&nbsp;
+&nbsp;&nbsp;
+<%= image_tag("load_spinner.gif",
+              :align => 'absmiddle',
+              :border=> 0,
+              :id => "DVH_spinnerLM3",
+              :style=>"display: none;")
+%>
+<br />
+<span id="show_DVH_Partial3"></span>
+</div>
+<%= observe_field 'dvh_dropdown3',  
+		 :frequency => 3,
+         :update 	=> 'show_DVH_Partial3',
+         :before 	=> "Element.show('DVH_spinnerLM3')",
+         :success 	=> "Element.hide('DVH_spinnerLM3')",		 
+         :url 		=> {:action => 'showDVH3'},
+         :with 		=> 'dvh' 
+%>
+<div id="dvh_select_form" style="float: right;">
+<%=select(:dvh,:dropdown4, dvh_list,{:selected => selected}) %>
+&nbsp;&nbsp;
+&nbsp;&nbsp;
+<%= image_tag("load_spinner.gif",
+              :align => 'absmiddle',
+              :border=> 0,
+              :id => "DVH_spinnerLM4",
+              :style=>"display: none;")
+%>
+<br />
+<span id="show_DVH_Partial4"></span>
+</div>
+<%= observe_field 'dvh_dropdown4',  
+		 :frequency => 3,
+         :update 	=> 'show_DVH_Partial4',
+         :before 	=> "Element.show('DVH_spinnerLM4')",
+         :success 	=> "Element.hide('DVH_spinnerLM4')",		 
+         :url 		=> {:action => 'showDVH4'},
+         :with 		=> 'dvh' 
+%>
+<%end %>

@@ -1,0 +1,206 @@
+<%
+conditions = ["user_id = ?", "#{@session['user']['id']}"]
+
+@allStructures = Userstructdict.find(:all, :conditions => conditions);
+
+structurename = Array.new;
+@allStructures.each do |struct|    
+    structurename << struct.structurename
+end
+
+metrics = Array.new;
+metrics << 'Select Metric'
+metrics << 'Dx'
+metrics << 'Vx'
+metrics << 'maxDose'
+metrics << 'meanDose'
+metrics << 'minDose'
+
+category = Array.new
+category << 'PTV Coverage Goals'
+category << 'Critical Structure Constraints'
+category << 'Normal Tissue Constraints'
+%>
+
+<%if isMD%>
+    <h3>Add Standardize Report Parameters</h3>
+    
+<%= form_remote_tag(
+:update => "show_selected_report",
+:url        => {:controller => 'standardreports',:action => 'updatemetrics'},
+:before     => "Element.show('spinnerReport')",
+:success    => "Element.hide('spinnerReport')") 
+%>
+        <table id="addnewplanparam">
+            <tbody>
+                <tr>
+                    <td align='center'><strong>Structure</strong></td>
+                    <td align='center'><strong>Category</strong></td>
+                    <td align='center'><strong>Metric</strong></td> 
+                </tr>            
+                <tr>
+                    <td width="90" align='center' style="padding: 0 4em 0 0;"><%=select(:standardreport,:structure, structurename) %></td>            
+          
+                    <td width="120" align='center' style="padding: 0 4em 0 0;"><%= select(:standardreport,:category, category)%></td>            
+                    
+                    <td width="130" align='center'><%= select(:standardreport,:metric, metrics)%></td>            
+                </tr>            
+            </tbody>
+        </table>
+        <br />
+
+    
+    <%= observe_field 'standardreport_metric',  
+    :frequency  => 2,
+    :update     => 'add_report_params',
+    :url        => {:controller => 'standardreports', :action => 'dispmetric'},
+    :before     => "Element.show('spinnerReport')",
+    :success    => "Element.hide('spinnerReport')",
+    :failure    => "alert('There was an error')",
+    :with       => "'standardreport_structure='+ escape($('standardreport_structure').value) + '&standardreport_category='+ escape($('standardreport_category').value) + '&standardreport_metric=' + escape(value)" 
+    %>
+            
+    <div id='disp_metric_selected'></div>    
+    
+    <div id="add_report_params"></div>    
+    
+    
+    <% end_form_tag %>
+<%end%>
+
+<h3>Listing Report Parameters</h3>
+<p>
+Note:
+<span class="notice">
+If the Structure name are exact match, only then the parameters could be transfered for this version. Blank spaces & Case do not matter. 
+</span>
+</p>
+
+<% if @total == 0 %>
+
+    <p>No Report Parameters found ...
+    <%if !isMD%>
+    <span class="cancel"><%= button_to("Cancel", :controller =>"inplanparams", :action=>"list")%> </span>
+    <%end%>
+    </p>
+
+<% else %>
+
+    <p>Number of Report Parameters found&nbsp;&nbsp;: <b><%= @total %>
+    <%if !isMD%>
+    <span class="cancel"><%= button_to("Cancel", :controller =>"inplanparams", :action=>"list")%> </span>
+    <%end%>
+    </p>
+<br />
+    
+<% if isMD %>    
+<form action='<%= url_for(:controller => "processplans" ,:action => "deleteselectedparams") %>' method='POST'>
+<%else%>
+<form action='<%= url_for(:controller => "processplans" ,:action => "addselectedparams") %>' method='POST'>
+<%end%>
+    <table>
+        <thead>
+            <tr>
+                <td align="center"> <input type="checkbox" onclick="checkThis(this);" /></td>
+                <td align='center' <%= sort_td_class_helper "Structure" %>><%= sort_link_helper "Structure", "Structure" %></td>    
+                <td align='center'>Metric</td>
+                <td align='center'>Goals</td>  
+                <td align='center' <%= sort_td_class_helper "Category" %>><%= sort_link_helper "Category", "Category" %></td>
+            </tr>
+        </thead>
+        <tbody>
+                <%
+                    str_id = "params_list_"
+                    i = 0
+                    @standardreports.each do |k|
+                      i = i + 1%>
+
+                <%
+                condition = "standardreport_id = #{k.id}"
+                
+                case k.metric
+                when "Dx"           
+                    then 
+                
+                        @dx = Dxmetric.find(:first, :conditions => condition)
+                        
+                        goal = [ @dx.percentage.to_s + ' ' + '% Vol  > ' + @dx.passvalue.to_s + ' Gy Dose' ] 
+                        
+                        metric = 'Dx'
+                
+                when "Vx"           
+                    then 
+                        
+                        @vx = Vxmetric.find(:first, :conditions => condition)
+                        
+                        goal = [ @vx.passvalue.to_s + ' Cc Vol  > ' +  @vx.percentage.to_s + '% Structure Dose' ]
+                        
+                        metric = 'Vx'
+                        
+                when "minDose"      
+                    then 
+                                                        
+                        @minDose = Mindosemetric.find(:first, :conditions => condition)
+                        
+                        goal = [ @minDose.passvalue.to_s + ' ' + 'Gy  +/-  ' + @minDose.margin.to_s  + ' Gy']
+                                
+                        metric = 'Min Dose'
+                        
+                when "maxDose"      
+                    then 
+                            
+                        @maxDose = Maxdosemetric.find(:first, :conditions => condition)
+                        
+                        goal = [ @maxDose.passvalue.to_s + ' ' + 'Gy  +/-  ' + @maxDose.margin.to_s  + 'Gy']
+                        
+                        metric = 'Max Dose'
+                        
+                when "meanDose"     
+                    then 
+                                                    
+                        @meanDose = Meandosemetric.find(:first, :conditions => condition)
+                        
+                        goal = [ @meanDose.passvalue.to_s + ' ' + 'Gy  +/-  ' + @meanDose.margin.to_s + 'Gy']
+                        
+                        metric = 'Mean Dose'
+                end
+                %>    
+                
+            <tr class="<%= cycle("even","odd") %>">
+                <td width="30"  align="left"> <%= check_box('struct_id', k.id.to_s, {:checked => false, :class => 'field_check'}, 1, '0') %></td>                    
+                <td width="300" align='center'> <%= k.structure %></td>    
+                <td width="150"  align='left'> <%= metric%>        </td>                    
+                <td width="450" align='left'> <%= goal%>          </td>
+                <td width="380" align='left'> <%= k.category %>   </td>
+
+                <% if isMD %>
+                    <td width="70" align='left'>
+                    <%=
+                        link_to_remote 'Edit', 
+                        :update      => "<%=str_id.concat(k.id.to_s)>",
+                        :url         =>{ :action => 'edit', :id => k}, 
+                        :method      => :post%>                                                            
+                    <br />
+                    <%=
+                        link_to_remote 'Remove', 
+                        :update      => 'show_selected_report',
+                        :url         =>{ :action => 'destroy', :id => k}, 
+                        :confirm     => 'Are you sure?', 
+                        :method      => :post%>
+                    </td>
+                <% end %>
+            </tr>
+            <%end%>
+        </tbody>
+    </table>
+    
+        <% if isMD %>    
+        <br />
+        <input type='submit' disabled='disabled' value='Delete Following Parameters'/>    
+        <%else%>      
+        <br />
+        <input type='submit' value='Add Following Parameters'/>
+        <% end%>
+            
+</form>
+<% end %>

@@ -1,0 +1,30 @@
+    <!--[form:dxmetric]-->
+<p align='center' style="color:#551011"><strong>Returns the lowest dose in x% (vol) of structure </strong></p>
+
+<table>
+    <tbody>
+        <tr>
+            <td align='center'><strong>Percentage (% Volume) </strong></td>
+            <td align='center'><strong>Pass Value (Gy)</strong></td>
+            <td align='center'><strong>Margin (Gy)</strong></td>
+        </tr>
+        
+        <tr>
+            <td width="50" align='center' style="padding: 0 2em 0 2em;"><%= text_field 'dxmetric', 'percentage'  %></td>            
+  
+            <td width="50" align='center' style="padding: 0 2em 0 0;"><%= text_field 'dxmetric', 'passvalue'  %></td>
+            
+            <td width="50" align='center'><%= text_field 'dxmetric', 'margin'  %></td>                            
+        </tr>
+        
+    </tbody>
+</table>
+
+<br />  
+
+<!--[eoform:dxmetric]-->
+
+<span class="submit_metrics"><%= submit_tag 'Add' %>
+
+<br />  
+

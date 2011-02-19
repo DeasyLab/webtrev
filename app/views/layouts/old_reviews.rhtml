@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+    <head>
+
+        <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+        <title>Reviews:<%= controller.action_name %></title>
+        
+        <%= stylesheet_link_tag 'scaffold' %>
+        <%= javascript_include_tag :defaults %>
+        <%= javascript_include_tag "sorttable", "bubble","styley_source", "cookies" %>
+
+    </head>
+
+    <body>
+        <div id="banner">
+            <span class="leftimg">
+                <img  src= "/images/washU.PNG"/>
+            </span>
+            <span class="rightimg">
+                <img  src= "/images/radOnc.png"/>
+            </span>Web Based
+            <br/>Treatment Plan Review           
+        </div>
+        
+        <% user = @session['user']
+                if !user.nil? %>
+                   <div class="userName"> Hello, <%= user.firstname %></div>
+        <%end%>
+        
+        <div class="planSetting">
+        	<span onmouseover="showToolTip(event,'Edit/Change user settings');return false" onmouseout="hideToolTip()">
+        	   <%= link_to("Setting", :controller =>"settings", :action=>"list")%>        	
+        	</span> 
+        	&#47;
+            <span onmouseover="showToolTip(event,'Log out your session');return false" onmouseout="hideToolTip()">
+        	   <%= link_to("Log Out", :controller =>"account", :action=>"logout")%>        	
+        	</span>
+        </div>
+        
+        
+        <div id="bubble_tooltip">
+        	<div class="bubble_top"><span></span></div>
+        	<div class="bubble_middle"><span id="bubble_tooltip_content"></span></div>
+        	<div class="bubble_bottom"></div>
+        </div>
+        
+        <% @plan = session['plan'] %>
+        
+	    <p class="curView"><%= @plan.first_name + ' ' + @plan.last_name %>
+
+	        <br/><%= @plan.tx_plan_id.slice(0..9) %>
+	    </p>
+        
+        <div id="side">        	
+        	<%=link_to "&nbsp;&nbsp; Approved List", 	{:controller=>"plans"   ,:action=>"approved" }, {:class=>"leftNavLocal"}%>
+        	<br />
+        	
+        	<%=link_to "&nbsp;&nbsp; Unapproved List", 	{:controller=>"plans", :action => "unapproved" }, {:class=>"leftNavLocal"} %>
+        	<br />
+        	
+        	<%=link_to "&nbsp;&nbsp; List All", 		{:controller =>"plans"  ,:action=>"all"}, {:class=>"leftNavLocal"} %>
+        	<br />
+        	
+        	<%if !isMD%>
+        	   <%=link_to "&nbsp;&nbsp; Process Plans", 	{:controller=>"processplans", :action => "list"}, {:class=>"leftNavLocal"} %>
+        	<br /> 
+        	<%end%>
+        	
+        	<%=link_to "&nbsp;&nbsp; Contact", 		{:controller =>""  ,:action=>""  , :id=>""  }, {:class=>"leftNavLocal"} %>
+        	<br />
+        </div>
+               
+
+        <ul id="nav">
+
+            <li class="tab-selected" id="transverse_tab"><strong>
+                <%= link_to_remote "Transverse", 
+                                    :update     => 'review_remote_update',
+                                    :url        => {:controller =>"reviews" ,:action=>"transverse", :layout => false},
+                                    :complete   => "tabselect($('transverse_tab'));"%>
+            </strong></li>
+
+            <li class="tab-unselected" id="sagittal_tab"><strong>
+                 <%= link_to_remote "Sagittal", 
+                                    :update     => 'review_remote_update',
+                                    :url        => {:controller =>"reviews" ,:action=>"sagittal"},
+                                    :complete   => "tabselect($('sagittal_tab'));"%>
+            </strong></li>
+
+            <li class="tab-unselected" id="coronal_tab">
+                <%= link_to_remote "Coronal", 
+                                    :update     => 'review_remote_update',
+                                    :url        => {:controller =>"reviews" ,:action=>"coronal"},
+                                    :complete   => "tabselect($('coronal_tab'));"%>
+            </strong></li>
+            
+            <li class="tab-unselected" id="dvh_tab"><strong>
+                <%= link_to_remote "DVH", 
+                                    :update     => 'review_remote_update',
+                                    :url        => {:controller =>"reviews" ,:action=>"dvh"},
+                                    :complete   => "tabselect($('dvh_tab'));"%>
+            </strong></li>
+
+            <li class="tab-unselected" id="planparam_tab">
+                <strong> <%= link_to_remote "Planning Params", 
+                                    :update     => 'review_remote_update',
+                                    :url        => {:controller =>"outplanparams"  ,:action=>"list"},
+                                    :complete   => "tabselect($('planparam_tab'));"
+                         %> 
+                  </strong>
+            </li>
+
+        </ul>
+        
+        <div id="review">
+            <br />
+            <span id="review_remote_update"> <%= @content_for_layout %> </span>
+            
+            
+            <%= render :partial => "reviews/show" %>
+        </div>
+        
+        <div id="comment_container">
+        
+            <span id="new_link">
+            <%= link_to_remote "New Comment",
+            :update     => 'add_comment',
+            :url        => {:controller => 'comments', :action => 'form'},
+            :failure    => "alert('There was an error')",
+            :success    => "setStyleById('add_comment','display', 'block');",
+            :complete   => "$('new_link').hide()" %>                        
+            </span>
+            
+            <br />
+            
+            <span id="add_comment">
+            </span>
+            
+            <br />
+            
+            <span id="comment_list">
+            </span>
+            
+        </div>                 
+    </body>
+
+</html>

@@ -1,0 +1,57 @@
+<%= error_messages_for 'standardreports' %>
+
+<!--[form:standardreports]-->
+
+<%
+unit = Array.new
+unit << '%'
+unit << 'cc'
+unit << 'Gy'
+unit << 'Mean'
+
+type = Array.new
+type << 'Vol'
+type << 'Rx'
+
+operator = Array.new
+operator << '<'
+operator << '>'
+operator << '<='
+operator << '>='
+operator << '='
+operator << '!='
+
+categorys = Array.new
+categorys << 'PTV Coverage Goals'
+categorys << 'Critical Structure Constraints'
+categorys << 'Normal Tissue Constraints'
+%>
+
+<table>
+    <tbody>
+        <tr>
+            <td align='center'><strong>Structure</strong></td>
+            <td align='center'><strong>Goal</strong></td>
+            <td align='center'><strong>Category</strong></td> 
+        </tr>
+        <tr>
+            <td width="110" align='center'><%= text_field('standardreports', 'structure', 'size' => 20)%></td>
+            
+            <td width="430" align='center'>            
+                <%= text_field('standardreports', 'lh_digit', 'size' => 4)%>
+                <%= select(:standardreports,:lh_unit, unit)%>
+                <%= select(:standardreports,:lh_type , type)%>
+                
+                <%= select(:standardreports,:rel_operator, operator)%>
+                
+                <%= text_field('standardreports', 'rh_digit', 'size' => 4)%>
+                <%= select(:standardreports,:rh_unit, unit)%>
+                <%= select(:standardreports,:rh_type, type)%>
+            </td>
+            
+            <td width="120" align='center'><%= select(:standardreports,:category, categorys)%></td>            
+        </tr>
+    </tbody>
+</table>
+<!--[eoform:standardreports]-->
+

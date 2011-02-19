@@ -1,0 +1,11 @@
+
+<h3>New Report Parameters</h3>
+
+<%= form_remote_tag(:update => "show_selected_report",
+:url => { :controller=> "standardreports", :action => 'create'},
+:success => 'cancel_new_report_param_link();') %>
+
+<%= render :partial => 'form' %>
+
+<p><span class="cancel"><%= link_to_function('Cancel', 'cancel_new_report_param_link();' ) %></span>
+<%= submit_tag "Create" %> </p>

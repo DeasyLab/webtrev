@@ -1,0 +1,50 @@
+
+<%
+@dvh = Dvhstat.allstructbyplan(@plan.id)
+
+#debugger if ENV['RAILS_ENV'] == 'development'
+
+structName = Array.new
+
+structName << ['Select Target', 0]
+
+@dvh.each do |dvh|
+    structName << [dvh.structName, dvh.structNum]
+end
+
+if !@session['target_structOnSlc'].nil?
+    selected = @session['target_structOnSlc'];
+else
+    selected = 0;
+end
+%>
+<div id="structOnSlc_form">
+<% form_tag :action => 'target', :id => @target do %>
+  <strong>Show Slices with Target:</strong>
+  <br />
+  <%=select(:target,:struct, structName,{:selected => selected}) %>  &nbsp;&nbsp;&nbsp;&nbsp;
+  <%= submit_tag 'show' %>
+<% end %>
+<%@session['target_structOnSlc'] = 0%>
+</div>
+<p></p>
+<p></p>
+<% if !@alltargetURL.empty? %>
+<%#debugger if ENV['RAILS_ENV'] == 'development'%>
+    <ul>
+        <% 
+        Review.has_many(:comment)
+        %>
+        <% @alltargetURL.each do |photo| %>
+            <% @i = photo.coord%>
+            <li id="<%= photo.id %>"><%= thumb_for photo %>
+                <br/><span class="photoCaption"><%= @i %> cm
+                <%hasComm = Comment.findByReviewID(photo.id)
+                  if !hasComm.empty? %>
+                    <img alt="Comments present" src="../images/icon_comment.png" />
+                    <%end%>
+                    </span>
+            </li>
+        <% end %>
+    </ul>
+<% end %>

@@ -1,0 +1,8 @@
+<% for column in Dxmetric.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @dxmetric.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @dxmetric %> |
+<%= link_to 'Back', :action => 'list' %>

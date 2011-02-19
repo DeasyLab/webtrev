@@ -1,0 +1,14 @@
+<div id="report_bg">
+<%@allReview_id.each do |photo| %>
+	<%hasComm = Comment.findByReviewID(photo.id)
+	if !hasComm.empty? %>
+		<p>
+		    <%= thumb_for photo %>		    
+		    <%=hasComm[0].body %>
+			<hr />
+		</p>
+	<%end%>
+<%end%>
+</ul>
+</table>
+</div>

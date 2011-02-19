@@ -1,0 +1,42 @@
+
+<% if @total == 0 %>
+    <p>No Plan Parameters found for<%= @session['processplan_name'] %>...</p>
+<% else %>
+    <p>Number of Parameters found for<%= @session['processplan_name'] %>:
+        <b><%= @total %></b>
+    </p>
+    <p>
+        <% if @inplanparam_pages.page_count > 1 %>
+            Page&nbsp;:
+            <%= pagination_links_remote @inplanparam_pages %>
+        <% end %>
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <td align='center' <%= sort_td_class_helper "Structure" %>><%= sort_link_helper "Structure", "Structure" %></td>
+                <td align='center'>Goals</td>
+                <td align='center' <%= sort_td_class_helper "Category" %>><%= sort_link_helper "Category", "Category" %></td>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% Inplanparam.has_many(:allstruct) %>
+
+            <% @inplanparams.each do |k| %>
+                <tr class="<%= cycle("even","odd") %>">
+                    <td width="110" align='center'><%= k.structure %></td>
+                    <td width="220" align='center'>
+                        <% goal =[ k.lh_digit.to_s + ' ' + k.lh_unit + ' ' + k.lh_type + ' ' + k.rel_operator + ' ' + k.rh_digit.to_s + ' ' + k.rh_unit + ' ' + k.rh_type] %>
+                        <%= goal %>
+                    </td>
+                    <td width="120" align='center'><%= k.category %></td>
+                    <td width="90" align='left'><%= link_to 'Edit', :action => 'edit', :id => k %>
+                        <br /><%= link_to 'Destroy', { :action => 'destroy', :id => k}, :confirm => 'Are you sure?', :method => :post %>
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+<% end %>

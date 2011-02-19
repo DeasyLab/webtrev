@@ -1,0 +1,27 @@
+<h1>Listing dxmetrics</h1>
+
+<table>
+  <tr>
+  <% for column in Dxmetric.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for dxmetric in @dxmetrics %>
+  <tr>
+  <% for column in Dxmetric.content_columns %>
+    <td><%=h dxmetric.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => dxmetric %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => dxmetric %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => dxmetric }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @dxmetric_pages.current.previous } if @dxmetric_pages.current.previous %>
+<%= link_to 'Next page', { :page => @dxmetric_pages.current.next } if @dxmetric_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New dxmetric', :action => 'new' %>

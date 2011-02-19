@@ -1,0 +1,15 @@
+
+<%= form_remote_tag(:update => "settingDisp",
+:url => { :controller=> "standardreporttypes", :action => 'create'},
+:success => 'cancel_report_type();') %>
+
+<p>    
+    <span class="cancel"><%= link_to_function('Cancel', 'cancel_report_type();' ) %></span>
+    <strong>Report Name</strong>
+</p>
+
+<%= text_field 'standardreporttype', 'reportName' %>
+
+<%= submit_tag "Create" %>
+
+<% end_form_tag %>

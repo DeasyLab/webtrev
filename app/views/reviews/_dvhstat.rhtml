@@ -1,0 +1,9 @@
+<%if !@dvhstat.nil?%>
+<p id="dvh_stats_show">
+<strong> <%=@dvhstat.structName%></strong><br />
+Volume&nbsp;: <%=@dvhstat.volume%> cc <br/>
+MinDose&nbsp;: <%=@dvhstat.mindose%>  <%=@dvhstat.doseUnit%> <br/>
+MeanDose: <%=@dvhstat.meandose%>  <%=@dvhstat.doseUnit%><br/>
+MaxDose&nbsp;: <%=@dvhstat.maxdose%> <%=@dvhstat.doseUnit%><br/>
+</p>
+<%end%>

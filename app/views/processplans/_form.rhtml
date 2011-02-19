@@ -1,0 +1,19 @@
+<%= error_messages_for 'processplan' %>
+
+<!--[form:processplan]-->
+<p><label for="processplan_archive">Archive</label><br/>
+<%= text_field 'processplan', 'archive'  %></p>
+
+<p><label for="processplan_patientname_first">Patientname first</label><br/>
+<%= text_field 'processplan', 'patientname_first'  %></p>
+
+<p><label for="processplan_patientname_last">Patientname last</label><br/>
+<%= text_field 'processplan', 'patientname_last'  %></p>
+
+<p><label for="processplan_processed">Processed</label><br/>
+<select id="processplan_processed" name="processplan[processed]"><option value="false" selected>False</option><option value="true">True</option></select></p>
+
+<p><label for="processplan_inqueue">Inqueue</label><br/>
+<select id="processplan_inqueue" name="processplan[inqueue]"><option value="false" selected>False</option><option value="true">True</option></select></p>
+<!--[eoform:processplan]-->
+

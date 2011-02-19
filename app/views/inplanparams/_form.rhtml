@@ -1,0 +1,39 @@
+<%= error_messages_for 'inplanparam' %>
+
+<!--[form:inplanparam]-->
+
+<%
+unit = Array.new
+unit << '%'
+unit << 'cc'
+unit << 'Gy'
+unit << 'Mean'
+
+type = Array.new
+type << 'Vol'
+type << 'Rx'
+
+operator = Array.new
+operator << '<'
+operator << '>'
+operator << '<='
+operator << '>='
+operator << '='
+operator << '!='
+%>
+
+<p> 
+</p>
+
+            <td width="430" align='center'>          
+                <%= text_field('inplanparam', 'lh_digit', 'size' => 4)%>
+                <%= select(:inplanparam,:lh_unit, unit)%>
+                <%= select(:inplanparam,:lh_type , type)%>
+                
+                <%= select(:inplanparam,:rel_operator, operator)%>
+                
+                <%= text_field('inplanparam', 'rh_digit', 'size' => 4)%>
+                <%= select(:inplanparam,:rh_unit, unit)%>
+                <%= select(:inplanparam,:rh_type, type)%>
+            </td>
+          

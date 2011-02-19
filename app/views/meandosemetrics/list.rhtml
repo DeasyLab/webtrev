@@ -1,0 +1,27 @@
+<h1>Listing meandosemetrics</h1>
+
+<table>
+  <tr>
+  <% for column in Meandosemetric.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for meandosemetric in @meandosemetrics %>
+  <tr>
+  <% for column in Meandosemetric.content_columns %>
+    <td><%=h meandosemetric.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => meandosemetric %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => meandosemetric %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => meandosemetric }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @meandosemetric_pages.current.previous } if @meandosemetric_pages.current.previous %>
+<%= link_to 'Next page', { :page => @meandosemetric_pages.current.next } if @meandosemetric_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New meandosemetric', :action => 'new' %>

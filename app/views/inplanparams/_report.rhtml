@@ -1,0 +1,115 @@
+<div id="report_bg"> 
+
+<% Inplanparam.has_many(:allstruct) %>
+
+<br />
+<% if @total == 0 %>
+    <p>
+    	No Plan Parameters found for<%= session['plan'].tx_plan_id %>...
+	</p>
+<% else %>
+    <p>
+    	Number of Parameters found for <%= session['plan'].tx_plan_id %>: <b><%= @total %></b>
+    </p>
+	
+    <p>
+        <% if @inplanparam_pages.page_count > 1 %>
+            Page&nbsp;:
+            <%= pagination_links_remote @inplanparam_pages %>
+        <% end %>
+    </p>
+
+    <table>
+        <thead class="thead">
+            <tr>
+                <td align='center' <%= sort_td_class_helper "Structure" %>><%= sort_link_helper "Structure", "Structure" %></td>
+                <td align='center' <%= sort_td_class_helper "Metric" %>><%= sort_link_helper "Metric", "Metric" %></td>
+                <td align='center'>Goals</td>
+                <td align='center' <%= sort_td_class_helper "Category" %>><%= sort_link_helper "Category", "Category" %></td>                
+            </tr>
+        </thead>
+
+        <tbody>
+            <% @inplanparams.each do |k| %>
+				<tr class="<%= cycle("even","odd") %>">                  
+                 <%case k.metric
+                    when "Dx"           
+                        then 
+                    
+                            @dx = Dxmetric.find(:first, :conditions => "inplanparam_id = #{k.id}")
+                            
+                            goal = [ @dx.percentage.to_s + ' ' + '% Struct Vol  gets <= ' + @dx.passvalue.to_s + ' +/- ' + @dx.margin.to_s  + ' Gy'] 
+                            
+                            metric = 'Dx'
+                    
+							result = @dx.result
+
+                    when "Vx"           
+                        then 
+                            
+                            @vx = Vxmetric.find(:first, :conditions => "inplanparam_id = #{k.id}")
+                            
+                            goal = [ @vx.passvalue.to_s + ' +/- ' + @vx.margin.to_s + ' % Struct Vol  gets >= ' + @vx.doseCutoff.to_s +  ' Gy Cutoff']
+                            
+                            metric = 'Vx'
+                            
+							result = @vx.result
+
+                    when "minDose"      
+                        then 
+                                                            
+                            @minDose = Mindosemetric.find(:first, :conditions => "inplanparam_id = #{k.id}")
+                            
+                            goal = [ @minDose.passvalue.to_s + ' ' + ' +/-  ' + @minDose.margin.to_s  + ' Gy' ]
+                                    
+                            metric = 'Min Dose'
+                            
+							result = @minDose.result
+
+                    when "maxDose"      
+                        then 
+                                
+                            @maxDose = Maxdosemetric.find(:first, :conditions => "inplanparam_id = #{k.id}")
+                            
+                            goal = [ 'Max Dose >= ' + @maxDose.passvalue.to_s + ' ' + ' +/-  ' + @maxDose.margin.to_s + ' Gy' ]
+                            
+                            metric = 'Max Dose'
+
+							result = @maxDose.result
+                            
+                    when "meanDose"     
+                        then 
+                                                        
+                            @meanDose = Meandosemetric.find(:first, :conditions => "inplanparam_id = #{k.id}")
+                            
+                            goal = ['Mean Dose >= ' + @meanDose.passvalue.to_s + ' ' + ' +/-  ' + @meanDose.margin.to_s + ' Gy' ]
+                            
+                            metric = 'Mean Dose'
+							
+							result = @meanDose.result
+                  end %>                   
+                    <td width="100"     align='left'> <%= k.structure %>  </td>
+                    <td width="50"      align='left'> <%= metric%>        </td>                    
+                    <td width="250"     align='left'> <strong><%= goal%></strong></td>
+                    <td width="150"     align='left'> <%= k.category %>   </td>       
+					                    
+					<td width="70" align='center'>
+	                    <% if result.eql?('Pass')%>
+	                    <font color="#336633"> <strong><%= result %></strong></font>						
+	                    <%else%>                    
+	                    <font color="#FF0000"> <strong><%= result %></strong></font>
+	                    <%end%>
+                    </td>
+					             
+					<td width="200" align='left'>
+                        <strong> Volume   :</strong> <%=k.volume%> <%=k.volUnit%><br />
+                        <strong> Min Dose :</strong> <%=k.mindose%> <%=k.doseUnit%><br />
+                        <strong> Mean Dose:</strong> <%=k.meandose%> <%=k.doseUnit%><br />
+                        <strong> Max Dose :</strong> <%=k.maxdose%> <%=k.doseUnit%><br /><br />
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>    
+<% end %>
+</div>

@@ -1,0 +1,39 @@
+
+<h3>Standard Report Types</h3>
+<br />
+<strong>Select Report:</strong>
+<%= collection_select(:reportName, :id, @standardreporttypes, :id, :reportName, options ={:prompt  => true}) %>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+<%=
+    image_tag("load_spinner.gif",
+    :align    => 'absmiddle',
+    :border   => 0,
+    :id       => "spinnerReport",
+    :style    =>"display: none;" )
+%>
+
+<br />
+<br />
+
+<div id="new_report_link">
+    <strong>
+        <%=link_to_remote "Add New Report",
+        :update     => 'reprot_type_add',
+        :url        => {:controller => 'standardreporttypes', :action => 'form'},
+        :complete   => "cancel_new_report()",
+        :failure    => "alert('There was an error')" %>
+    </strong>        
+</div>
+
+<%=observe_field 'reportName_id',  :frequency => 2,
+:update    => 'show_selected_report',
+:before    => "Element.show('spinnerReport')",
+:success   => "Element.hide('spinnerReport')",
+:url       => {:controller => 'standardreports', :action => 'list'},
+:with      => 'reportName'%>
+
+<div id="reprot_type_add"></div>
+
+<br />
+<div id="show_selected_report"></div>

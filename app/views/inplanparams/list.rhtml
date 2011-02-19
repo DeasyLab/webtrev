@@ -1,0 +1,122 @@
+<%
+Inplanparam.has_many(:allstruct)
+
+@allstruct = Allstruct.allstructName(@session['processplan_id'])
+
+structName = Array.new
+@allstruct.each do |allstruct|
+    structName << allstruct.structurename
+end
+
+metrics = Array.new;
+metrics << 'Select Metric'
+metrics << 'Dx'
+metrics << 'Vx'
+metrics << 'maxDose'
+metrics << 'meanDose'
+metrics << 'minDose'
+
+category = Array.new
+category << 'PTV Coverage Goals'
+category << 'Critical Structure Constraints'
+category << 'Normal Tissue Constraints'
+%>
+
+
+<span class="done_btn"><%= button_to "Go Back", {:controller=>"processplans", :action => "process_list"} %></span>
+
+&nbsp;&nbsp;
+&nbsp;&nbsp;
+
+<span>
+<%=
+    image_tag("load_spinner.gif",
+    :align    => 'absmiddle',
+    :border   => 0,
+    :id       => "spinnerSTR",
+    :style    =>"display: none;" )
+%>
+
+</span>
+
+       
+<br />
+<br />
+
+<h3>Plan Parameters</h3>
+<br />
+
+<p>
+<span class="std_report_btn" onmouseover="showToolTip(event,'Select a pre-generated report to fill parameters');return false" onmouseout="hideToolTip()">
+<%=button_to("Use Standardize Report", {:controller =>"processplans", :action=>"reportGeneration"})%>
+</span>
+<strong>Use Standardize Report :</strong> 
+</p>
+
+<br />
+
+<h3>Add New Plan Parameters</h3>
+
+<br />
+<% form_tag :action => 'updatemetrics' do %>
+
+    <table>
+        <tbody>
+            <tr>
+                <td align='center'><strong>Structure</strong></td>
+                <td align='center'><strong>Category</strong></td>
+                <td align='center'><strong>Metric</strong></td> 
+            </tr>
+            
+            <tr>
+                <td width="90" align='center' style="padding: 0 4em 0 0;"><%=select(:inplanparam,:structure, structName) %></td>            
+      
+                <td width="120" align='center' style="padding: 0 4em 0 0;"><%= select(:inplanparam,:category, category)%></td>            
+                
+                <td width="130" align='center'><%= select(:inplanparam,:metric, metrics)%></td>            
+            </tr>
+            
+        </tbody>
+    </table>
+
+
+<br />
+<div id='disp_metric_selected'></div>
+
+<%= observe_field 'inplanparam_metric',  :frequency => 2,
+:update    => 'disp_metric_selected',
+:url       => {:controller =>"inplanparams", :action => 'dispmetric'},
+:before    => "Element.show('spinnerSTR')",
+:success   => "Element.hide('spinnerSTR')",
+:with      => "'inplanparam_structure='+ escape($('inplanparam_structure').value) + '&inplanparam_category='+ escape($('inplanparam_category').value) + '&inplanparam_metric=' + escape(value)" %>
+
+<%end%>
+
+<div id="newParamShow"></div>
+
+<br />
+
+<h3>Listing Plan Parameters</h3>
+<br />
+
+<p>
+    <form name="sform" action="" style="display:inline;">
+        <label for="item_name">Filter on
+            <strong>Structure:</strong>
+        </label><%= text_field_tag("querySTR", @params['querySTR'], :size => 10 ) %>
+    </form>
+</p>
+
+<%= observe_field 'querySTR',  :frequency => 2,
+:update    => 'inplanparams_list_table',
+:before    => "Element.show('spinnerSTR')",
+:success   => "Element.hide('spinnerSTR')",
+:url       => {:action => 'list'},
+:with      => 'querySTR' %>
+
+<br />
+
+<div id="inplanparams_list_table"><%= render :partial => "inplanparams_list" %></div>
+
+<br />
+<span class="done_btn"><%= button_to "Go Back", {:controller=>"processplans", :action => "process_list"} %></span>

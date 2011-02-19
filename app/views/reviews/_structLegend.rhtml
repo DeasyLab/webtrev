@@ -1,0 +1,25 @@
+<br />     
+
+<% #debugger %>         
+
+<form id="my_form" action="">         
+	<table>     
+	    <tbody>
+		<tr> <input type="checkbox" onclick="checkThis(this);" /><strong></>Select All</strong></tr>        
+	    <%@structLegend.each_with_index { |legend,i|%>
+	    
+	    <%fields = parse_csv(legend[2])%>  
+	    
+	    <tr id="<%='legend' + i.to_s%>">                                 
+	        <input type="checkbox" /><%=legend[1]%>                             
+	    </tr>
+	        <!--
+	    <script type="text/javascript">
+	        color = RGBtoHex(<%= (fields[0].to_f*255)%> ,<%= (fields[1].to_f*255)%> ,<%= (fields[2].to_f*255)%>)
+	        setStyleById('<%='legend' + i.to_s%>','background', color)	        
+	    </script>           
+		// -->
+	    <%}%>    
+	    </tbody>
+	</table>
+</form>

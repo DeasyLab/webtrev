@@ -1,0 +1,97 @@
+<% if @total == 0 %>
+    <p>No Plans found...</p>
+<% else %>
+    <%
+        Processplan.belongs_to(:user)
+        @userAll = User.getMD(nil);
+        # debugger if ENV['RAILS_ENV'] == 'development'
+%>
+    <p>Number of Plans found :
+        <b><%= @total %></b>
+    </p>
+
+    <p>
+        <% if @processplan_pages.page_count > 1 %>
+            Page&nbsp;:
+            <%= pagination_links_remote @processplan_pages %>
+        <% end %>
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <td <%= sort_td_class_helper "Plan" %>><%= sort_link_helper "Plan", "Plan" %></td>
+                <td <%= sort_td_class_helper "Lastname" %>><%= sort_link_helper "Last Name", "Lastname" %></td>
+                <td <%= sort_td_class_helper "Firstname" %>><%= sort_link_helper "First Name", "Firstname" %></td>
+                <td <%= sort_td_class_helper "datecreated" %>><%= sort_link_helper "Import Date", "datecreated" %></td>
+            </tr>
+        </thead>
+        <tbody>
+            <% Processplan.has_many(:alldose) %>
+
+            <% @processplans.each do |k| %>
+                <tr class="<%= cycle("even","odd") %>">                    
+                    <td width="90"><strong>RT No:</strong> <%= k.archive %>
+	                    <br />
+						<br />
+						
+
+						                      
+	                </td>
+                    
+                    <td width="90" align='center'><%= k.patientname_last %></td>
+                    <td width="90" align='center'><%= k.patientname_first %></td>
+                    <td width="110" align='center'><%= k.datecreated.ctime %></td><!-- Button to add Planning parameters-->
+                    
+                    <td width="70" align='center'>
+                        <% @doseColl = Alldose.find_all_by_processplan_id(k.id) %>
+                                               
+						<%=form_tag({:action=>'sendtoqueue'},{:onSubmit=>"return processPlanDataCheck(this);", :multipart => true, :confirm => "Are you sure?"}) %>
+
+                            <select name="doseSelect" id="doseSelect_dose_id">
+                                <option value="None">Select dose</option>
+                                <% for doseColl in @doseColl %>
+                                    <option value= <%= doseColl.id.to_s %> ><%= [doseColl.dose_fraction +  '   ' + doseColl.prescription.to_s + ' ' + doseColl.doseUnit] %></option>
+                                <% end %>
+                            </select>
+							<br />
+                            <select name="userSelect" id="userSelect_user_id">
+                                <option value="None">Select Ref MD</option>
+
+                                <% for user in @userAll %>
+                                    <option value= <%= user.id.to_s %> ><%= [user.firstname + ' ' + user.lastname] %></option>
+                                <% end %>
+                            </select>
+
+                            <%= hidden_field_tag("plan_id", value = "#{k.id}")%>
+                            <br />
+                             <select id="processplan_preset" name="presetSelect">                             
+                                <option value="None">Select Window</option>
+                                <option value="Default">Default</option>
+                                <option value="Abdomen">Abdomen</option>
+                                <option value="Head">Head</option>
+                                <option value="Liver">Liver</option>
+                                <option value="Lung">Lung</option>
+                                <option value="Spine">Spine</option>
+                                <option value="Vrt/Bone">Vrt/Bone</option>
+                                <option value="PET">PET</option>
+                                <option value="MR">MR</option>                                
+                                <option value="SPECT">SPECT</option>
+                            </select>
+							<br />
+							<strong>Add/Replace Pinnacle Report:</strong> 
+							<% # file_field 'upload', 'datafile' %>		
+							<%= file_field(:upload, :datafile, {:accept=>'application/pdf'})%>					
+                            <br />
+                            <br />                                                        
+                            <%= submit_tag "Process Plan" %>                            
+                        <%= end_form_tag %>  
+						
+                        <br />
+                        <br />
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+<% end %>

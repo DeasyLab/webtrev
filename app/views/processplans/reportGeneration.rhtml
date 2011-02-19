@@ -1,0 +1,37 @@
+<div>
+
+<span class="cancel"><%= button_to("Cancel", :controller =>"inplanparams", :action=>"list")%> </span>
+<p>
+    <strong>Select MD:&nbsp;&nbsp;</strong>Dr.&nbsp;<%= collection_select(:lastname, :id, @userAll, :id, :lastname, options ={:prompt => "-Select a MD"}, :class =>" ") %>
+&nbsp;&nbsp;
+&nbsp;&nbsp;
+
+<%=
+        image_tag("load_spinner.gif",
+        :align    => 'absmiddle',
+        :border   => 0,
+        :id       => "spinnerReport",
+        :style    =>"display: none;" )
+%>
+
+</p>
+
+<%=
+    observe_field 'lastname_id',  :frequency => 4,
+    :update    => 'show_selected_user_report',
+    :before    => "Element.show('spinnerReport')",
+    :success   => "Element.hide('spinnerReport')",
+    :url       => {:action => 'showReportTypes'},
+    :with      => 'lastname'
+%>
+</div>
+
+<br />
+
+<div id="show_selected_user_report"></div>
+
+<br />
+
+<div id="show_selected_report"></div>
+
+

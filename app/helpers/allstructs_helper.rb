@@ -1,0 +1,2 @@
+module AllstructsHelper
+end

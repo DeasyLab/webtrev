@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    
+    <head>
+        <title>WebTREV</title>
+        <%= stylesheet_link_tag "scaffold" , :media => "all"%>
+        <%= javascript_include_tag :defaults %>
+        <%= javascript_include_tag "bubble" %>
+    </head>
+    
+    <body>       
+        <div id="banner">
+            <span class="leftimg">
+                <img  src= "/images/washU.PNG"/>
+            </span>
+            <span class="rightimg">
+                <img  src= "/images/radOnc.png"/>
+            </span>Web Based
+            <br/>Treatment Plan Review
+        </div>
+
+        <span>
+            <% user = @session['user']
+            if !user.nil? %>
+            <div class="userName">Hello,<%= user.firstname %></div>
+            <% end %>
+        </span>
+
+        <div class="planSetting">
+            <span onmouseover="showToolTip(event,'Edit/Change user settings');return false" onmouseout="hideToolTip()"><%= link_to("Setting", :controller =>"settings", :action=>"list") %></span>&#47;
+            <span onmouseover="showToolTip(event,'Log out your session');return false" onmouseout="hideToolTip()"><%= link_to("Log Out", :controller =>"account", :action=>"logout") %></span>
+        </div>        
+        
+        <div id="bubble_tooltip">
+        	<div class="bubble_top"></div>
+        	<div class="bubble_middle"><span id="bubble_tooltip_content"></span></div>
+        	<div class="bubble_bottom"></div>
+        </div>
+                
+        <div id="side"><%= link_to "&nbsp;&nbsp; Approved List", 	{:controller=>"plans"   ,:action=>"approved" }, {:class=>"leftNavLocal"} %>
+            <br /><%= link_to "&nbsp;&nbsp; Unapproved List", 	{:controller=>"plans", :action => "unapproved" }, {:class=>"leftNavLocal"} %>
+            <br /><%= link_to "&nbsp;&nbsp; List All", 		{:controller =>"plans"  ,:action=>"all"}, {:class=>"leftNavLocal"} %>
+            <br /><%= link_to "&nbsp;&nbsp; Contact", 		{:controler =>""  ,:action=>""  , :id=>""  }, {:class=>"leftNavLocal"} %>
+            <br />
+        </div>
+        
+
+        <ul id="nav">
+            <li id="account">
+                <strong><%= link_to_remote "Account",
+                            :update     => 'settingDisp',
+                            :url        => {:controller => 'account', :action => 'changePass'},
+                            :failure    => "alert('There was an error')" %></strong>
+            </li>
+        
+            <% if isMD %>
+            <li id="standardizedreport">
+                <strong><%= link_to_remote "Standardized Report",
+                            :update     => 'settingDisp',
+                            :url        => {:controller => 'standardreporttypes', :action => 'index'},
+                            :failure    => "alert('There was an error')" %></strong>
+            </li>
+            <% end %>
+
+            <% if isMD %>
+            <li id="structdict">
+                <strong><%= link_to_remote "Structure Dictionary",
+                            :update     => 'settingDisp',
+                            :url        => {:controller => 'userstructdicts', :action => 'list'},
+                            :failure    => "alert('There was an error')" %></strong>
+            </li>
+            <% end %>
+                                                           
+            <li id="installation">
+                    <strong><%= link_to_remote "Downloads",
+                                :update     => 'settingDisp',
+                                :url        => {:controller => 'settings', :action => 'installation'},
+                                :failure    => "alert('There was an error')" %></strong>
+            </li>
+        </ul>
+                    
+        <div id="settingDisp"></div>
+    </body>
+</html>

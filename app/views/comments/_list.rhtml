@@ -1,0 +1,18 @@
+<% @comments = Comment.findByReviewID(@review_id.to_i)%>
+
+<% i = 0;%>
+<% for comment in @comments %>
+	<%i = i+1%>
+	<%if @session['view'].eql?('dvh') %>
+		<%if i==1%>
+	<h3><%= Dvhstat.structName_by_review_id(comment.review_id)[0].structName%> </h3>
+		<%end%>
+	<strong><%= comment.created_by %> Said</strong> 
+	<%else%>
+    <h3><%= comment.created_by %> Said</h3>
+	<%end%>
+    <span class="small angle" ><%= time_ago_in_words comment.created_at %> ago</span>
+
+    <span class="commentBody"><%= simple_format comment.body %></span>
+
+<% end %>

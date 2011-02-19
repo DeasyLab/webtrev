@@ -1,0 +1,21 @@
+<%dvh_toDisplay = Array.new
+dvh_toDisplay << ['Select  DVH to Add Comments', 0]
+if !session['dvh_displayed'][0].nil?
+dvh_toDisplay << [session['dvh_displayed'][0], session['dvh_id'][0]]
+end
+if !session['dvh_displayed'][1].nil?
+dvh_toDisplay << [session['dvh_displayed'][1], session['dvh_id'][1]]
+end
+if !session['dvh_displayed'][2].nil?
+dvh_toDisplay << [session['dvh_displayed'][2], session['dvh_id'][2]]
+end
+if !session['dvh_displayed'][3].nil?
+dvh_toDisplay << [session['dvh_displayed'][3], session['dvh_id'][3]]
+end %><%=
+    form_remote_tag(:update 	=> "dvh_add_comment",
+    				:url 		=> { :controller=> "comments", :action => 'form' },
+              		:success    => "setStyleById('dvh_add_comment','display', 'block');",              		:complete   => "$('dvh_new_link').hide()")
+%>
+
+<%=select(:dvh,:dropdown, dvh_toDisplay, {}, {:onChange => 'this.form.submit();'}) %>
+<%end_form_tag %>

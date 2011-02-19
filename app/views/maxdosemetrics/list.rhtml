@@ -1,0 +1,27 @@
+<h1>Listing maxdosemetrics</h1>
+
+<table>
+  <tr>
+  <% for column in Maxdosemetric.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for maxdosemetric in @maxdosemetrics %>
+  <tr>
+  <% for column in Maxdosemetric.content_columns %>
+    <td><%=h maxdosemetric.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Show', :action => 'show', :id => maxdosemetric %></td>
+    <td><%= link_to 'Edit', :action => 'edit', :id => maxdosemetric %></td>
+    <td><%= link_to 'Destroy', { :action => 'destroy', :id => maxdosemetric }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @maxdosemetric_pages.current.previous } if @maxdosemetric_pages.current.previous %>
+<%= link_to 'Next page', { :page => @maxdosemetric_pages.current.next } if @maxdosemetric_pages.current.next %> 
+
+<br />
+
+<%= link_to 'New maxdosemetric', :action => 'new' %>

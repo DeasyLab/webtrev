@@ -1,0 +1,106 @@
+<% if @total == 0 %>
+
+    <p>No items found...</p>
+
+<% else %>
+
+    <p>Number of Plans found :
+        <b><%= @total %></b>
+    </p>
+
+    <p>
+        <% if @plans_pages.page_count > 1 %>
+            Page&nbsp;:
+            <%= pagination_links_remote @plans_pages, @planType %>
+        <% end %>
+    </p>
+    <%@userAll = User.getMD(nil)%>
+
+
+<table cellpadding = "5" cellspacing="0">
+
+    <thead class="thead">
+
+        <tr>
+
+            <td <%= sort_td_class_helper "Plan ID"%>><%= sort_link_helper "Plan ID", "Plan ID", @planType %></td>
+
+            <td <%= sort_td_class_helper "Last Name"%>><%= sort_link_helper "Last Name", "Last Name", @planType %></td>
+
+            <td <%= sort_td_class_helper "First Name"%>><%= sort_link_helper "First Name", "First Name", @planType %></td>
+
+            <td <%= sort_td_class_helper "Date Created"%>><%= sort_link_helper "Date Created", "Date Created", @planType %></td>
+
+            <%if !@session['planType'].eql?('unapproved')%>    	
+            <td <%= sort_td_class_helper "Date Approved"%>><%= sort_link_helper "Date Approved", "Date Approved", @planType %></td>
+            <%end%>
+            
+            <td <%= sort_td_class_helper "Planner"%>><%= sort_link_helper "Planner", "Planner", @planType %></td>
+
+            <td <%= sort_td_class_helper "Planning System"%>><%= sort_link_helper "Planning System", "Planning System", @planType %></td>
+
+            <td <%= sort_td_class_helper "Status"%>><%= sort_link_helper "Status", "Status", @planType %></td>
+            
+        </tr>
+    </thead>
+    <tbody>
+        <%
+            odd_or_even = 0 
+            for plan in @plans       
+              odd_or_even = 1 - odd_or_even
+        %>
+
+        <tr valign = "top" class="ListLine<%=odd_or_even %>">
+
+            <td width="90" align='center'><%= plan.tx_plan_id.slice(0..9) %>
+            <br />
+            <% if plan.plan_status.eql?('unapproved') %>
+                <% if isMD %>
+                    <%=button_to "Approve",{:controller =>"plans", :action=>"approve" , :id => plan},
+                        :confirm    =>  "Are you sure ?"%>
+                <% else %>
+                    <% if plan.send_review %>
+                        <%= button_to "Re-Send",{:controller =>"plans",:action=>"send_review",:id=>plan},
+                        :confirm => "Are you sure?"
+                        %>
+                        
+                    <% else %>
+                        <%= button_to "Send",{:controller =>"plans",:action=>"send_review",:id=>plan},
+                        :confirm => "Are you sure?"
+                        %>
+                    <% end %>
+                <% end %>
+            <% end %>                        
+            </td>
+            
+            <td width="90" align='center'><%= link_to plan.last_name, {:action => "review", :id => plan} %></td>
+
+            <td width="90" align='center'><%= link_to plan.first_name, {:action => "review", :id => plan} %></td>
+
+            <td width="90" align='center'><%= plan.created_at.ctime %></td>
+
+            <%if !@session['planType'].eql?('unapproved')%>    	
+            <td width="90" align='center'>
+            <%if !plan.approved_at.nil?%>
+                <%= plan.approved_at.ctime %>
+            <%end%>
+            </td>
+            <%end%>
+
+            <td width="90" align='center'><%= plan.planner %></td>
+
+            <td width="90" align='center'><%= plan.tx_plan_system %></td>
+
+            <td width="90" align='center'><%= plan.plan_status %></td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<p>
+    <% if @plans_pages.page_count > 1 %>
+        Page&nbsp;:
+        <%= pagination_links_remote @plans_pages, @planType %>
+    <% end %>
+</p>
+<% end %>

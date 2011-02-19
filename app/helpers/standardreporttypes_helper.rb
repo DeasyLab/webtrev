@@ -1,0 +1,2 @@
+module StandardreporttypesHelper
+end
